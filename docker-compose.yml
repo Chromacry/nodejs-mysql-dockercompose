@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+  server_app:
+    depends_on:
+      - mysql_server
+    build:
+      context: ./server #Currentfile
+      dockerfile: Dockerfile
+    container_name: server-app
+    ports:
+      #Local:Docker
+      - "5000:5000"
+    volumes:
+      - ./server:/server-app # local path : docker path
+      - ./server:/D/GHTemplates/node-js-mysql-dockercompose/server
+    restart: always
+
+  mysql_server:
+    image: mysql
+    stdin_open: true
+    container_name: mysql-db
+    ports:
+      - "3306:3306"
+    command:
+    - --sql_mode=
+    cap_add:
+      - SYS_NICE  # CAP_SYS_NICE
+    environment:
+      - MYSQL_DATABASE=test_db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=P@ssw0rd
+      - MYSQL_ROOT_PASSWORD=P@ssw0rd
+    restart: always    
