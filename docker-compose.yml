@@ -7,6 +7,7 @@ services:
       context: ./server #Currentfile
       dockerfile: Dockerfile
     container_name: server-app
+    stdin_open: true
     ports:
       #Local:Docker
       - "5000:5000"
@@ -14,9 +15,10 @@ services:
       - ./server:/server-app # local path : docker path
       - ./server:/D/GHTemplates/node-js-mysql-dockercompose/server
     restart: always
+    command: npm start
 
   mysql_server:
-    image: mysql
+    image: mysql:8.0.30
     stdin_open: true
     container_name: mysql-db
     ports:
@@ -25,9 +27,12 @@ services:
     - --sql_mode=
     cap_add:
       - SYS_NICE  # CAP_SYS_NICE
+    env_file: ./server/.env
     environment:
       - MYSQL_DATABASE=test_db
       - MYSQL_USER=user
       - MYSQL_PASSWORD=P@ssw0rd
       - MYSQL_ROOT_PASSWORD=P@ssw0rd
-    restart: always    
+    volumes:
+      - D:\MySQL_Data\GHTemplate_nodejs-mysql-dockercompose:/var/lib/mysql
+    restart: unless-stopped    
